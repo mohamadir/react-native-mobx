@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import {Platform,FlatList ,StyleSheet,TextInput,ToastAndroid, KeyboardAvoidingView,TouchableOpacity,AsyncStorage, Text, View} from 'react-native';
 import axios from 'axios'
-import { ListItem,List, SearchBar} from 'react-native-elements'
+import { ListItem,List, SearchBar, Button} from 'react-native-elements'
+import BookStore from '../../Store/BookStore'
+import {observer} from 'mobx-react'
 
-
-
+@observer
 export default class UsersList extends Component {
     constructor(props){
         super(props)
@@ -24,6 +25,8 @@ export default class UsersList extends Component {
     componentDidMount(){
       console.log(this.props.navigation.getParam('Mohamd', 'Nothing'))
       const {seed,page}= this.state
+      BookStore.addBook({title:'Book 3', author: 'Book FOUR ', read: true})
+    
       const url = `https://randomuser.me/api/?seed=${seed}&page=${page}&results=20`
       this.setState({loading: true})
          axios.get(url).then(response => {
@@ -49,8 +52,9 @@ export default class UsersList extends Component {
     }
 
     renderHeader = () =>{
+ 
       return(
-        <SearchBar
+  /*       <SearchBar
           placeholder="Type here.." 
           lightTheme
           onChangeText={(query)=>{
@@ -58,7 +62,10 @@ export default class UsersList extends Component {
           }}
           style={{backgroundColor: '#fff'}}
           round
-        />
+        /> */
+        <Button title="CLICK ME " onPress={()=>{
+          const {books} = BookStore
+        }}></Button>
       );
     }
     renderItem = (item) =>{
@@ -74,7 +81,10 @@ export default class UsersList extends Component {
 
 
   render = ()=> {
+    const {books} = BookStore
+    console.log(books.length)
     return (
+
           <FlatList
             data={this.state.data}
             renderItem={({item})=>{
